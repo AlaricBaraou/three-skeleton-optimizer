@@ -1,0 +1,6 @@
+# Dependencies
+node_modules
+
+# Production builds
+dist
+dist-examples

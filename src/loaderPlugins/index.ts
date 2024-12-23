@@ -1,0 +1,1 @@
+export { BoneInfluencePrunerPlugin } from "./boneInfluencePrunerPlugin";

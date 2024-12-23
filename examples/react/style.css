@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+}
+
+canvas {
+    width: 100vw;
+    height: 100vh;
+}
+
+.controls {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+}
+
+.back-link {
+    display: block;
+    margin-top: 10px;
+    color: #fff;
+    text-decoration: none;
+}

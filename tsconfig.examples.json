@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "three-skeleton-optimizer": ["./src/index.ts"]
+    }
+  },
+  "include": ["examples/**/*.ts", "examples/**/*.tsx", "src/**/*.ts"]
+}

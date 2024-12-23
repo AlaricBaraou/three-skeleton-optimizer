@@ -1,0 +1,52 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2018": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "extends": [
+    "mdcs",
+    "plugin:compat/recommended"
+  ],
+  "plugins": [
+    "html",
+    "import"
+  ],
+  "rules": {
+    "no-throw-literal": [
+      "error"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+      }
+    ],
+    "no-irregular-whitespace": [
+      "error"
+    ],
+    "no-duplicate-imports": [
+      "error"
+    ],
+    "valid-jsdoc": [
+      "error",
+      {
+        "requireReturn": false,
+        "requireReturnType": true,
+        "requireParamDescription": false,
+        "requireReturnDescription": false,
+        "requireParamType": true
+      }
+    ]
+  }
+}
