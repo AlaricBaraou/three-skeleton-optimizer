@@ -8,6 +8,7 @@ import { VRMLoaderPlugin } from '@pixiv/three-vrm';
 
 import * as THREE from 'three';
 import { CustomSkeletonHelper } from '../examplesUtils/CustomSkeletonHelper';
+import { DebugSkinnedMeshGenerator } from './DebugSkinnedMeshGenerator';
 
 class MeshSkeletonHelper extends THREE.Object3D {
     constructor(skinnedMesh) {
@@ -164,22 +165,28 @@ export { MeshSkeletonHelper };
 
 class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
   constructor(options = {}) {
+
+      options.transparent = true
+
       super(options);
 
       this.userData.uniforms = {
         targetBoneIndex: { value: this.targetBoneIndex },
         influenceThreshold: { value: this.influenceThreshold },
+        discardTriangle: { value: this.discardTriangle },
       };
 
       // Store uniforms that we'll need to inject
       this.targetBoneIndex = options.targetBoneIndex ?? 0;
       this.influenceThreshold = options.influenceThreshold ?? 1;
+      this.discardTriangle = options.discardTriangle ?? 1;
       this.colorramp = new THREE.TextureLoader().load('/three-skeleton-optimizer/examplesUtils/colorramp.jpg');
 
       this.onBeforeCompile = (shader) => {
           // Add our custom uniforms
           shader.uniforms.targetBoneIndex = { value: this.targetBoneIndex };
           shader.uniforms.influenceThreshold = { value: this.influenceThreshold };
+          shader.uniforms.discardTriangle = { value: this.discardTriangle };
           shader.uniforms.colorramp = { value: this.colorramp };
           this.userData.uniforms = shader.uniforms
 
@@ -188,7 +195,8 @@ class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
             '#include <common>',
             `#include <common>
             uniform float targetBoneIndex;
-            varying float vInfluence;`
+            varying float vInfluence;
+            flat out float triangleInfluence;`
         );
 
         // Add the influence calculation in vertex shader
@@ -197,14 +205,18 @@ class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
             `#include <skinning_vertex>
             
             // Calculate total influence from target bone
-            vInfluence = 0.0;
+            float vertexInfluence = 0.0;
             #ifdef USE_SKINNING
                 for(int i = 0; i < 4; i++) {
                     if(skinIndex[i] == targetBoneIndex) {
-                        vInfluence += skinWeight[i];
+                        vertexInfluence += skinWeight[i];
                     }
                 }
-            #endif`
+            #endif
+            
+            vInfluence = vertexInfluence;
+            
+            triangleInfluence = vertexInfluence;`
         );
 
           // Add varying and uniforms to fragment shader
@@ -213,16 +225,22 @@ class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
               `#include <common>
               uniform float targetBoneIndex;
               uniform float influenceThreshold;
+              uniform int discardTriangle;
               uniform sampler2D colorramp;
-              varying float vInfluence;`
+              varying float vInfluence;
+              flat in float triangleInfluence;`
           );
 
           // Replace the fragment shader's color assignment
           shader.fragmentShader = shader.fragmentShader.replace(
               'vec4 diffuseColor = vec4( diffuse, opacity );',
               `// Discard fragment if influence is above threshold
-              if(vInfluence > influenceThreshold) {
+              if(discardTriangle == 1 && triangleInfluence > influenceThreshold) {
                   discard;
+              }
+              float newOpacity = opacity;
+              if(vInfluence > influenceThreshold) {
+                  newOpacity = discardTriangle == 1 ? opacity * 0.5 : opacity;
               }
 
               // Get color from the ramp texture based on influence
@@ -237,7 +255,7 @@ class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
                   float grid = abs(fract(rel_value + 0.5) - 0.5);
               }
               
-              vec4 diffuseColor = vec4(finalColor, opacity);`
+              vec4 diffuseColor = vec4(finalColor, newOpacity);`
           );
       };
   }
@@ -261,6 +279,16 @@ class BoneInfluenceMaterialV2 extends THREE.MeshStandardMaterial {
 
   get influenceThreshold() {
       return this._influenceThreshold;
+  }
+
+  set discardTriangle(value) {
+      this._discardTriangle = value;
+      this.userData.uniforms.discardTriangle.value = value;
+      this.needsUpdate = true;
+  }
+
+  get discardTriangle() {
+      return this._discardTriangle;
   }
 }
 
@@ -360,6 +388,7 @@ const DropZone = ({ onDrop, setIsVRM }) => {
         }}>
           Test with a VRM avatar
         </button>
+      <DebugSkinnedMeshGenerator />
     </div>
   );
 };
@@ -405,6 +434,8 @@ function BonesNames({gltf, setBoneIndex}) {
 
 function Model({ gltf, setBoneIndex }) {
   const {scene, animations} = gltf
+
+  console.log('scene', scene)
 
   const ref = useRef<Group<Object3DEventMap>>(scene)
 

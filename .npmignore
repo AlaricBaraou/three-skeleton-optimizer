@@ -1,0 +1,8 @@
+src/
+examples/
+node_modules/
+.git/
+.github/
+*.log
+tsconfig*.json
+vite.config*.js

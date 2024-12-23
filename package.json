@@ -1,6 +1,6 @@
 {
   "name": "three-skeleton-optimizer",
-  "private": true,
+  "version": "0.0.1",
   "description": "three-skeleton-optimizer - utilities for managing Three.js skeleton such as bone pruning and animation optimisation.",
   "author": "Alaric Baraou <alaric.baraou@gmail.com>",
   "license": "MIT",
