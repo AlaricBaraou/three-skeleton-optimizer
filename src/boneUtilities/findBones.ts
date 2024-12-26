@@ -1,5 +1,5 @@
 import { GLTF } from "three/examples/jsm/Addons.js";
-import { Bone, Object3D, SkinnedMesh } from "three";
+import { Object3D, SkinnedMesh } from "three";
 import { getVRMBoneMappings } from "./getVRMBoneMappings.js";
 
 export async function findBones(gltf: GLTF, targetBones: string[]) {

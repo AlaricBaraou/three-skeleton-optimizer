@@ -15,7 +15,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'examples/index.html'),
         native: resolve(__dirname, 'examples/native/index.html'),
-        react: resolve(__dirname, 'examples/react/index.html')
+        react: resolve(__dirname, 'examples/react/index.html'),
+        bonesDebug: resolve(__dirname, 'examples/bones-debug/index.html')
       }
     }
   },

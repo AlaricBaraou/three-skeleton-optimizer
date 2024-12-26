@@ -1,6 +1,6 @@
 {
   "name": "three-skeleton-optimizer",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "three-skeleton-optimizer - utilities for managing Three.js skeleton such as bone pruning and animation optimisation.",
   "author": "Alaric Baraou <alaric.baraou@gmail.com>",
   "license": "MIT",
@@ -22,15 +22,14 @@
     }
   },
   "scripts": {
-    "dev": "vite",
-    "dev:examples": "vite --config vite.config.examples.js --open /three-skeleton-optimizer/react/",
-    "build": "tsc && vite build",
+    "dev": "vite --config vite.config.examples.js --open /three-skeleton-optimizer/react/",
+    "build": "rollup -c",
     "build:examples": "tsc --project tsconfig.examples.json --noEmit && vite build --config vite.config.examples.js",
     "preview": "vite preview",
     "preview:examples": "vite preview --config vite.config.examples.js"
   },
   "peerDependencies": {
-    "three": "^0.161.0"
+    "three": ">=0.161.0"
   },
   "devDependencies": {
     "@pixiv/three-vrm": "^3.3.1",
@@ -38,6 +37,7 @@
     "@pixiv/types-vrmc-vrm-animation-1.0": "^3.3.0",
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",
+    "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^22.10.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
@@ -46,10 +46,12 @@
     "r3f-perf": "^7.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rollup-plugin-dts": "^6.1.1",
     "suspend": "^0.7.0",
     "terser": "^5.37.0",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.3",
-    "vite-plugin-dts": "^4.3.0"
+    "tslib": "^2.8.1",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.5",
+    "vite-plugin-dts": "^4.4.0"
   }
 }

@@ -7,7 +7,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'ThreeSkeletonOptimizer',
-      fileName: 'three-skeleton-optimizer',
+      fileName: (format, entryName) => `three-skeleton-optimizer-${entryName}.${format}.js`,
+      formats: ['es'],
     },
     rollupOptions: {
       external: ['three'],
@@ -18,5 +19,5 @@ export default defineConfig({
       }
     }
   },
-  plugins: [dts()],
+  plugins: [dts({ rollupTypes: true, include: ['src'] })],
 });

@@ -3,8 +3,7 @@ import { removeGeometryForBone } from '../boneUtilities/removeGeometryForBone';
 import { removeBoneFromSkeleton } from '../boneUtilities/removeBoneFromSkeleton';
 import { SkinnedMesh } from 'three';
 import { GLTF, GLTFLoaderPlugin, GLTFParser } from 'three/examples/jsm/Addons.js';
-
-interface BoneInfluencePrunerPluginOptions { bonesToRemove: string[], defaultInfluenceThreshold: number, removeBones: boolean }
+import { BoneInfluencePrunerPluginOptions } from '../types';
 
 export class BoneInfluencePrunerPlugin implements GLTFLoaderPlugin {
 	public readonly parser: GLTFParser;
@@ -50,6 +49,7 @@ export class BoneInfluencePrunerPlugin implements GLTFLoaderPlugin {
 
 				if (node) {
 
+					// @ts-ignore - \_(ツ)_/¯
 					const threshold = typeof this.bonesToRemove[index] === 'string' ? this.defaultInfluenceThreshold : this.bonesToRemove[index].threshold;
 					const boneIndex = skeleton.bones.findIndex(bone => bone === node);
 					console.log('name', name, threshold, boneIndex, skeleton.bones[boneIndex])
@@ -68,7 +68,7 @@ export class BoneInfluencePrunerPlugin implements GLTFLoaderPlugin {
 
 			if (this.removeBones) {
 
-				Object.entries(bones).forEach(([name, node], index) => {
+				Object.entries(bones).forEach(([_name, node]) => {
 					if (node) {
 
 						const boneIndex = skeleton.bones.findIndex(bone => bone === node);

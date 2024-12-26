@@ -1,4 +1,4 @@
-import { Bone, BufferGeometry, Skeleton, SkinnedMesh } from "three";
+import { BufferGeometry, Skeleton, SkinnedMesh } from "three";
 
 export function removeBoneFromSkeleton(skinnedMesh: SkinnedMesh, boneIndex: number) {
     // First remove the geometry influenced by the bone
@@ -36,7 +36,6 @@ function updateSkinIndices(geometry: BufferGeometry, removedBoneIndex: number) {
     for (let i = 0; i < skinIndices.count; i++) {
         for (let j = 0; j < 4; j++) {
             const idx = skinIndices.getComponent(i, j);
-            const weight = skinWeights.getComponent(i, j);
 
             if (idx > removedBoneIndex) {
                 skinIndices.setComponent(i, j, idx - 1);
@@ -63,47 +62,4 @@ function updateSkinIndices(geometry: BufferGeometry, removedBoneIndex: number) {
 
     skinIndices.needsUpdate = true;
     skinWeights.needsUpdate = true;
-}
-
-function updateBoneHierarchy(bone: Bone, removedBone: Bone) {
-    const children = [...bone.children];
-    for (const child of children) {
-        if (child === removedBone) {
-            // Reparent this bone's children to its parent
-            const parent = bone;
-            for (const grandChild of child.children) {
-                parent.add(grandChild);
-            }
-            child.parent.remove(child);
-        } else {
-            updateBoneHierarchy(child, removedBone);
-        }
-    }
-}
-
-function updateAnimationTracks(skinnedMesh, removedBoneIndex) {
-    if (skinnedMesh.animations) {
-        for (const animation of skinnedMesh.animations) {
-            const tracks = animation.tracks.filter(track => {
-                const boneIndex = parseInt(track.name.split('[')[1]);
-                return boneIndex !== removedBoneIndex;
-            });
-
-            // Update track names for bones with higher indices
-            tracks.forEach(track => {
-                const matches = track.name.match(/\[(\d+)\]/);
-                if (matches) {
-                    const boneIndex = parseInt(matches[1]);
-                    if (boneIndex > removedBoneIndex) {
-                        track.name = track.name.replace(
-                            `[${boneIndex}]`,
-                            `[${boneIndex - 1}]`
-                        );
-                    }
-                }
-            });
-
-            animation.tracks = tracks;
-        }
-    }
 }

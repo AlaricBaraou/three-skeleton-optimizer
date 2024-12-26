@@ -5,7 +5,7 @@ import { AnimationClip, Group, Mesh, Object3DEventMap, SkeletonHelper } from 'th
 import { Perf } from 'r3f-perf';
 import { useReactStats } from '../examplesUtils/ReactStats';
 import { GLTFLoader, SkeletonUtils } from 'three/examples/jsm/Addons.js';
-import { BoneInfluencePrunerPlugin } from 'three-skeleton-optimizer';
+import { BoneInfluencePrunerPlugin, BoneInfluencePrunerPluginOptions } from 'three-skeleton-optimizer';
 import { suspend } from 'suspend-react'
 import { threshold } from 'three/webgpu';
 
@@ -90,7 +90,7 @@ function Model({ url, withPlugin = false }) {
           ],
           defaultInfluenceThreshold: 0.3,
           removeBones: true
-      }));
+      } as BoneInfluencePrunerPluginOptions));
     }
     const gltf = await loader.loadAsync(urlToLoad);
     return gltf;
