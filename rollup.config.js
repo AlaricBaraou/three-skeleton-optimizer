@@ -8,12 +8,12 @@ export default [
         input: 'src/index.ts',
         output: [
             {
-                file: 'dist/three-skeleton-optimizer-index.es.js',
-                format: 'es'
+                file: 'dist/three-skeleton-optimizer.module.js',
+                format: 'esm'
             },
             {
-                file: 'dist/three-skeleton-optimizer-index.umd.js',
-                format: 'umd',
+                file: 'dist/three-skeleton-optimizer.cjs',
+                format: 'cjs',
                 name: 'ThreeSkeletonOptimizer',
             }
         ],

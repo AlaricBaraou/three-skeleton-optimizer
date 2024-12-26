@@ -1,25 +1,48 @@
 {
   "name": "three-skeleton-optimizer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "three-skeleton-optimizer - utilities for managing Three.js skeleton such as bone pruning and animation optimisation.",
   "author": "Alaric Baraou <alaric.baraou@gmail.com>",
   "license": "MIT",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md"
   ],
-  "main": "./dist/three-skeleton-optimizer.umd.js",
-  "module": "./dist/three-skeleton-optimizer.es.js",
+  "main": "./dist/three-skeleton-optimizer.cjs",
+  "module": "./dist/three-skeleton-optimizer.module.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": {
         "development": "./src/index.ts",
-        "default": "./dist/three-skeleton-optimizer.es.js"
+        "default": "./dist/three-skeleton-optimizer.module.js"
       },
-      "require": "./dist/three-skeleton-optimizer.umd.js"
+      "require": "./dist/three-skeleton-optimizer.cjs"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlaricBaraou/three-skeleton-optimizer.git"
+  },
+  "browserslist": [
+    "> 1%, not dead, not ie 11, not op_mini all"
+  ],
+  "keywords": [
+    "three",
+    "three.js",
+    "javascript",
+    "3d",
+    "skeleton",
+    "skinnedMesh",
+    "bones",
+    "optimizer"
+  ],
+  "bugs": {
+    "url": "https://github.com/AlaricBaraou/three-skeleton-optimizer/issues"
   },
   "scripts": {
     "dev": "vite --config vite.config.examples.js --open /three-skeleton-optimizer/react/",
