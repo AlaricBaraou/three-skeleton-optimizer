@@ -382,7 +382,8 @@ const DropZone = ({ onDrop, setIsVRM }) => {
         onClick={() => {
           const loader = new GLTFLoader();
           loader.register((parser) => new VRMLoaderPlugin(parser));
-          loader.load('/three-skeleton-optimizer/models/tokito.vrm', (gltf)=>{
+          // loader.load('/three-skeleton-optimizer/models/tokito.vrm', (gltf)=>{
+          loader.load('/three-skeleton-optimizer/models/test1.vrm', (gltf)=>{
             onDrop(gltf);
           });
         }}>

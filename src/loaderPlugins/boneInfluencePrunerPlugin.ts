@@ -44,7 +44,7 @@ export class BoneInfluencePrunerPlugin implements GLTFLoaderPlugin {
 			const skeleton = skinnedMesh.skeleton;
 
 			const bones = await findBones(gltf, this.bonesToRemove.map(bone => typeof bone === 'string' ? bone : bone.name));
-			console.log('found bones', bones)
+			// console.log('found bones', bones)
 			Object.entries(bones).forEach(([name, node], index) => {
 
 				if (node) {
@@ -52,8 +52,7 @@ export class BoneInfluencePrunerPlugin implements GLTFLoaderPlugin {
 					// @ts-ignore - \_(ツ)_/¯
 					const threshold = typeof this.bonesToRemove[index] === 'string' ? this.defaultInfluenceThreshold : this.bonesToRemove[index].threshold;
 					const boneIndex = skeleton.bones.findIndex(bone => bone === node);
-					console.log('name', name, threshold, boneIndex, skeleton.bones[boneIndex])
-					console.log('skeleton.bones[61]', skeleton.bones[61])
+					// console.log('name', name, threshold, boneIndex, skeleton.bones[boneIndex])
 					const newGeometry = removeGeometryForBone(skinnedMesh, boneIndex, threshold ?? this.defaultInfluenceThreshold);
 					skinnedMesh.geometry.dispose();
 					skinnedMesh.geometry = newGeometry;

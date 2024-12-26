@@ -1,6 +1,6 @@
 {
   "name": "three-skeleton-optimizer",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "three-skeleton-optimizer - utilities for managing Three.js skeleton such as bone pruning and animation optimisation.",
   "author": "Alaric Baraou <alaric.baraou@gmail.com>",
   "license": "MIT",
@@ -17,11 +17,9 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": {
-        "development": "./src/index.ts",
-        "default": "./dist/three-skeleton-optimizer.module.js"
-      },
-      "require": "./dist/three-skeleton-optimizer.cjs"
+      "import": "./dist/three-skeleton-optimizer.module.js",
+      "require": "./dist/three-skeleton-optimizer.cjs",
+      "default": "./dist/three-skeleton-optimizer.module.js"
     }
   },
   "repository": {

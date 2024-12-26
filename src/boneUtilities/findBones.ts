@@ -50,7 +50,7 @@ export async function findBones(gltf: GLTF, targetBones: string[]) {
 			return result;
 		}
 
-		console.log('skinnedMesh.skeleton.bones', skinnedMesh.skeleton.bones)
+		// console.log('skinnedMesh.skeleton.bones', skinnedMesh.skeleton.bones)
 		// Map each bone name to its index in the skeleton
 		// skinnedMesh.skeleton.bones.forEach((bone: Bone) => {
 		// 	result[bone.name] = bone;

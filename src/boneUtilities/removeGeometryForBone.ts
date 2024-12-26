@@ -97,9 +97,11 @@ export function removeGeometryForBone(skinnedMesh: SkinnedMesh, boneIndex: numbe
 
 	// Create new geometry with updated attributes
 	const newGeometry = new BufferGeometry();
+	newGeometry.copy(geometry);
 	newGeometry.setAttribute('position', new BufferAttribute(newPositions, 3));
 	newGeometry.setAttribute('skinWeight', new BufferAttribute(newWeights, 4));
 	newGeometry.setAttribute('skinIndex', new BufferAttribute(newJoints, 4));
+	Object.assign(newGeometry.userData, geometry.userData);
 
 	if (newIndices) {
 

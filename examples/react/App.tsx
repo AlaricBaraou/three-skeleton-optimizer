@@ -8,6 +8,7 @@ import { GLTFLoader, SkeletonUtils } from 'three/examples/jsm/Addons.js';
 import { BoneInfluencePrunerPlugin, BoneInfluencePrunerPluginOptions } from 'three-skeleton-optimizer';
 import { suspend } from 'suspend-react'
 import { threshold } from 'three/webgpu';
+import { VRMLoaderPlugin } from '@pixiv/three-vrm';
 
 const DropZone = ({ onDrop, setIsVRM }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -65,13 +66,19 @@ const DropZone = ({ onDrop, setIsVRM }) => {
           onDrop('/three-skeleton-optimizer/models/demoSkinnedMeshReadyPlayerMe.glb')
         }}
       >Test with a ready player me avatar instead</button>
+      <button
+        onClick={() => {
+          setIsVRM(true);
+          onDrop('/three-skeleton-optimizer/models/test1.vrm')
+        }}
+      >Test with a VRM instead</button>
     </div>
   );
 };
 
-function Model({ url, withPlugin = false }) {
+function Model({ url, withPlugin = false, isVRM = false }) {
   console.log('withPlugin', withPlugin);
-  const urlToLoad = useMemo(()=>withPlugin ? url.replace('.glb','-alt-path.glb') : url, [withPlugin, url]);
+  const urlToLoad = useMemo(()=>withPlugin ? url.replace('.glb','-alt-path.glb').replace('.vrm','-alt-path.vrm') : url, [withPlugin, url]);
   console.log('urlToLoad', urlToLoad);
 
   const {scene, animations} = suspend(async ()=>{
@@ -79,18 +86,19 @@ function Model({ url, withPlugin = false }) {
     if(withPlugin){
       loader.register((parser) => new BoneInfluencePrunerPlugin(parser, {
           bonesToRemove: [
-              'LeftLeg', 
-              'RightLeg', 
-              // {name:'LeftFoot',threshold:0.2},
-              // {name:'RightFoot',threshold:0.2},
-              // {name:'LeftToeBase',threshold:0.2}, 
-              // {name:'RightToeBase',threshold:0.2},
-              // {name:'LeftToe_End',threshold:0.2},
-              // {name:'RightToe_End',threshold:0.2}
+              'hips', 'upperChest', 'chest', 'spine', 
+              'leftUpperLeg', 'rightUpperLeg', 'leftLowerLeg', 'rightLowerLeg', 'leftFoot', 'rightFoot', 'leftToes', 
+              'rightToes'
           ],
           defaultInfluenceThreshold: 0.3,
-          removeBones: true
+          removeBones: false
       } as BoneInfluencePrunerPluginOptions));
+    }
+    if(isVRM){
+      loader.register((parser) => {
+        console.log('vrm plugin');
+        return new VRMLoaderPlugin(parser);
+      });
     }
     const gltf = await loader.loadAsync(urlToLoad);
     return gltf;
@@ -99,18 +107,18 @@ function Model({ url, withPlugin = false }) {
   const ref = useRef<Group<Object3DEventMap>>(scene)
   const { animations: animationsBackup } = useFBX("/three-skeleton-optimizer/animations/HipHopDancing.fbx");
   
-  const { actions } = useAnimations(animations, ref)
-  const { actions: actionsBackup } = useAnimations(animationsBackup, ref)
+  // const { actions } = useAnimations(animations, ref)
+  // const { actions: actionsBackup } = useAnimations(animationsBackup, ref)
 
-  useEffect(() => {
-    // play the first animation from the keys
-    const firstClip = animations[0] as AnimationClip
-    if(firstClip && actions[firstClip.name]){
-      actions[firstClip.name]?.play()
-    }else if(actionsBackup['mixamo.com']){
-      actionsBackup['mixamo.com']?.play()
-    }
-  }, [actions])
+  // useEffect(() => {
+  //   // play the first animation from the keys
+  //   const firstClip = animations[0] as AnimationClip
+  //   if(firstClip && actions[firstClip.name]){
+  //     actions[firstClip.name]?.play()
+  //   }else if(actionsBackup['mixamo.com']){
+  //     actionsBackup['mixamo.com']?.play()
+  //   }
+  // }, [actions])
 
   // add skeleton helper
   useHelper(ref, SkeletonHelper)
@@ -152,7 +160,7 @@ function Scene({ownOrbitCtrlRef, otherOrbitCtrlRef}) {
 
 export function App(): React.ReactElement {
   const [modelUrl, setModelUrl] = useState(null);
-  const [isVRM, setIsVRM] = useState(null);
+  const [isVRM, setIsVRM] = useState(false);
   const orbitControlsInstancesRefs = useMemo(()=>({
     _1: createRef(),
     _2: createRef(),
@@ -174,7 +182,7 @@ export function App(): React.ReactElement {
           shadows
         >
           <Suspense fallback={null}>
-            { modelUrl ? <Model url={modelUrl} /> : null }
+            { modelUrl ? <Model url={modelUrl} isVRM={isVRM} /> : null }
           </Suspense >
           <Scene ownOrbitCtrlRef={orbitControlsInstancesRefs._1} otherOrbitCtrlRef={orbitControlsInstancesRefs._2} />
         </Canvas>
@@ -184,7 +192,7 @@ export function App(): React.ReactElement {
           shadows
         >
           <Suspense fallback={null}>
-            { modelUrl ? <Model url={modelUrl} withPlugin={true} /> : null }
+            { modelUrl ? <Model url={modelUrl} withPlugin={true} isVRM={isVRM} /> : null }
           </Suspense >
           <Scene ownOrbitCtrlRef={orbitControlsInstancesRefs._2} otherOrbitCtrlRef={orbitControlsInstancesRefs._1} />
         </Canvas>
